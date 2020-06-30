@@ -6,7 +6,7 @@ const path = require('path');
 const koaBody = require('koa-body');
 const logger = require('koa-logger');
 const cors = require('@koa/cors');
-const routes = require('./router.js');
+const routes = require('./router/router.js');
 const config = require('./config');
 
 const app = new Koa();
