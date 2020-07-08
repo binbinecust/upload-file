@@ -17,9 +17,26 @@
     <el-progress
       :text-inside="true"
       :stroke-width="18"
-      :percentage="percentage"
+      :percentage="percentageTotal"
       status="success"
     ></el-progress>
+    <br>
+    <br>
+    <br>
+    <p>切片上传进度</p>
+    <div
+      v-for="(item, index) in fileChunks"
+      :key="index"
+    >
+      <p>{{hashes[index]}}</p>
+
+      <el-progress
+        :text-inside="true"
+        :stroke-width="18"
+        :percentage="percentageItems[index]"
+        status="success"
+      ></el-progress>
+    </div>
   </div>
 </template>
 
@@ -31,30 +48,55 @@ const sliceSize = 10 * 1024 * 1024; // 10M
 export default Vue.extend({
   data() {
     return {
-      hashes: [], // 文件切片hash
       fileHash: '', // 文件hash
       fileChunks: [],
       filename: '',
       totalSize: 0,
-      percentage: 0,
+      percentageTotal: 0,
+      percentageItems: [],
       uploadedItems: [] // 已上传的内容大小
     };
+  },
+  computed: {
+    hashes() {
+      return this.fileChunks.map((item, index) => {
+        return this.fileHash + '-' + index;
+      });
+    }
   },
   methods: {
     uploadProgress(index) {
       return e => {
+        console.log(e);
         this.uploadedItems[index] = e.loaded;
-        this.percentage = this.uploadedItems.length ? Math.floor((this.uploadedItems.reduce((acc, cur) => acc + cur, 0) / this.totalSize) * 100) : 0;
+        let percentageTotal = 0;
+        if (this.uploadedItems.length) {
+          percentageTotal = Math.floor((this.uploadedItems.reduce((acc, cur) => acc + cur, 0) / this.totalSize) * 100);
+          if (percentageTotal > 100) {
+            percentageTotal = 100;
+          }
+        }
+        this.percentageTotal = percentageTotal;
+        this.percentageItems[index] = Math.floor((e.loaded / e.total) * 100);
       };
     },
     resetData() {
-      this.percentage = 0;
+      this.percentageTotal = 0;
       this.uploadedItems = [];
       this.filename = '';
       this.fileChunks = [];
       this.totalSize = 0;
+      this.fileHash = '';
+      this.hashes = [];
+      this.percentageItems = [];
     },
-    calcFileHash() {},
+    calcFileHash() {
+      const worker = new Worker('/worker.js');
+      worker.postMessage(this.fileChunks);
+      worker.onmessage = e => {
+        this.fileHash = e.data.fileHash;
+      };
+    },
     changeFile(e) {
       this.resetData();
       this.fileChunks = [];
@@ -68,6 +110,13 @@ export default Vue.extend({
         this.fileChunks.push(file.slice(cur, cur + sliceSize));
         cur += sliceSize;
       }
+      this.calcFileHash();
+      // this.calcFileHash().then(res => {
+      //   this.fileHash = res;
+      //   this.fileChunks.forEach((item, index) => {
+      //     this.hashes[index] = this.fileHash + '-' + index;
+      //   });
+      // });
       console.log(this.fileChunks);
     },
     async upload() {

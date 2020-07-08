@@ -46,8 +46,16 @@ export default Vue.extend({
   methods: {
     uploadProgress(index) {
       return e => {
+        console.log(e);
         this.uploadedItems[index] = e.loaded;
-        this.percentage = this.uploadedItems.length ? Math.floor((this.uploadedItems.reduce((acc, cur) => acc + cur, 0) / this.totalSize) * 100) : 0;
+        let percentage = 0;
+        if (this.uploadedItems.length) {
+          percentage = Math.floor((this.uploadedItems.reduce((acc, cur) => acc + cur, 0) / this.totalSize) * 100);
+          if (percentage > 100) {
+            percentage = 100;
+          }
+        }
+        this.percentage = percentage;
       };
     },
     resetData() {
