@@ -1,29 +1,29 @@
-# 文件上传
+# file-upload
 
-## 普通表单上传
-
-```html
-<form action="localhost:6666/upload" method="POST" enctype="multipart/form-data">
-  <input type="file" name="myfile">
-  <input type="submit">
-</form>
+## Project setup
+```
+npm install
 ```
 
-```javascript
-// client
-const fs = 
-// server
+### Compiles and hot-reloads for development
+```
+npm run serve
 ```
 
-
-## 文件编码上传
-
-
-## formData异步上传
-
-<input type="file" multiple id="uploader" accept="image/*" />
-
-```javascript
-let uploaderDom  = document.querySelector('uploader')
-uploaderDom.
+### Compiles and minifies for production
 ```
+npm run build
+```
+
+### Run your tests
+```
+npm run test
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
