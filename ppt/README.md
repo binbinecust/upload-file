@@ -129,3 +129,19 @@ check-file 接口
 ## 大文件文件断点续传
 * 文件的唯一性 不能以文件名字来区分 而是应该以文件内容区分 反例：不同文件夹下的相同名字 
 * 解决方案：文件内容生成的文件hash
+* 没必要将文件命名为真实文件名 用户只需要能访问到这个资源就行了 用户对资源的映射
+
+
+# largeUploadHash
+filename -> filehash  获取扩展名 fileChunk 的序号 做子文件的命名
+
+## 断点续传
+* 请求取消
+* 标示文件唯一性
+* 继续请求从哪里开始
+* 怎么连接上
+
+requestList => Promise.resolve(); 保持索引不变 保持是promise 真正请求的只有没有请求成功的request
+取消之后让重新赋值requestList 否则他的状态就是reject cotinue的时候就会catch 
+
+让完成的percentege 100 取消的0； 重新计算进度

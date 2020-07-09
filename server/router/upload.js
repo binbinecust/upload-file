@@ -7,6 +7,7 @@ const writeFile = promisify(fs.writeFile);
 const {
   CODE
 } = require('../../config/constant');
+
 // -----------------------表单上传--------------------------
 const uploadForm = router.post('/uploadForm', async (ctx, next) => {
   const {
@@ -174,7 +175,9 @@ const largeUpload = router.post('/largeUpload', async (ctx, next) => {
     request,
   });
   let file = request.files.fileBinary;
-  let originFileName = request.body.fileName;
+  let {
+    fileName: originFileName
+  } = request.body;
   try {
     let fileName = originFileName.replace(/(.*)-(\d+)/, '$1');
     let index = originFileName.replace(/(.*)-(\d+)/, '$2');

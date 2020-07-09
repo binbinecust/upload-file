@@ -55,6 +55,10 @@ service.interceptors.response.use(
       if (error.message.includes('timeout')) {
         console.log('超时了');
         Message.error('请求超时，请检查网络是否连接正常');
+      } else if (axios.isCancel(error)) {
+        console.log('请求取消')
+        Message.error(error.message);
+        return Promise.reject();
       } else {
         // 可以展示断网组件
         console.log('断网了');
