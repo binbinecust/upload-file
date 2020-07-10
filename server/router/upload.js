@@ -4,37 +4,26 @@ const fs = require('fs');
 const promisify = require('util').promisify;
 const rename = promisify(fs.rename);
 const writeFile = promisify(fs.writeFile);
-const {
-  CODE
-} = require('../../config/constant');
+const { CODE } = require('../../config/constant');
 
 // -----------------------表单上传--------------------------
 const uploadForm = router.post('/uploadForm', async (ctx, next) => {
-  const {
-    request,
-    response
-  } = ctx;
+  const { request, response } = ctx;
   // console.log({ request });
   // const file = req.files.myfile;
   // console.log()
   let files = request.files;
   console.log({
-    file: request.files,
+    file: request.files
   });
   let filesObj = {};
   Object.entries(files).forEach(([inputName, inputFiles]) => {
     if (Array.isArray(inputFiles)) {
-      inputFiles.forEach(({
-        name,
-        path
-      }) => {
+      inputFiles.forEach(({ name, path }) => {
         filesObj[name] = path;
       });
     } else {
-      let {
-        name,
-        path
-      } = inputFiles;
+      let { name, path } = inputFiles;
       filesObj[name] = path;
     }
   });
@@ -47,7 +36,7 @@ const uploadForm = router.post('/uploadForm', async (ctx, next) => {
       try {
         newFileName[index] = `/${+new Date()}-${name}`;
         // newFileName.push(`/${+new Date()}-${name}`)
-        await rename(filesObj[name], `${staticPath}${newFileName}`);
+        await rename(filesObj[name], `${staticPath}${newFileName[index]}`);
       } catch (e) {
         console.error(e);
       }
@@ -66,35 +55,35 @@ const uploadForm = router.post('/uploadForm', async (ctx, next) => {
   // response.body = '上传成功'
   response.body = {
     code: 0,
-    url: newFileName,
+    url: newFileName
   };
 });
 
 // -----------------------编码上传base64--------------------------
 
 const uploadEncode = router.post('/uploadEncode', async (ctx, next) => {
-  const {
-    request,
-    response
-  } = ctx;
+  const { request, response } = ctx;
   const staticPath = path.resolve(__dirname, '../', 'static');
   console.log({
-    request,
+    request
   });
-  let {
-    imgBase64,
-    name
-  } = request.body;
-  imgBase64 = imgBase64.replace(/^data:image\/\w+;base64,/, '');
-  let dataBuffer = new Buffer(imgBase64, 'base64');
+  let { data, name } = request.body;
+  if (data.includes('base64')) {
+    data = data.replace(/.*;base64,/, '');
+    data = Buffer.from(data, 'base64');
+  } else {
+    data = Buffer.from(data, 'binary');
+  }
+  // imgBase64 = data.replace(/^data:image\/\w+;base64,/, '');
+  // let dataBuffer = new Buffer(imgBase64, 'base64');
   try {
     name = +new Date() + '-' + name;
-    await writeFile(`${staticPath}/${name}`, dataBuffer);
+    await writeFile(`${staticPath}/${name}`, data);
     response.status = 200;
     response.body = {
       code: 0,
       data: `/${name}`,
-      msg: 'upload success',
+      msg: 'upload success'
     };
   } catch (e) {
     console.error(e);
@@ -103,50 +92,49 @@ const uploadEncode = router.post('/uploadEncode', async (ctx, next) => {
 
 // -----------------------编码上传binary--------------------------
 
-const uploadEncodeBinary = router.post('/uploadEncodeBinary', async (ctx, next) => {
-  const {
-    request,
-    response
-  } = ctx;
-  const staticPath = path.resolve(__dirname, '../', 'static');
-  console.log({
-    request,
-  });
+// const uploadEncodeBinary = router.post(
+//   '/uploadEncodeBinary',
+//   async (ctx, next) => {
+//     const { request, response } = ctx;
+//     const staticPath = path.resolve(__dirname, '../', 'static');
+//     console.log({
+//       request
+//     });
 
-  let fileObj = request.body;
-  Object.keys(fileObj).forEach((key) => (fileObj[key] = decodeURI(fileObj[key])));
-  // fs.writeFileSync(`${staticPath}/${+new Date()}-${fileObj.name}`, fileObj.text, (e) => {
-  //   if (e) console.error(e);
-  //   response.status = 200;
-  //   response.body = {
-  //     code: 0,
-  //     msg: 'upload success'
-  //   }
-  // })
-  try {
-    let name = `${+new Date()}-${fileObj.name}`;
-    await writeFile(`${staticPath}/${name}`, fileObj.binary);
-    response.status = 200;
-    response.body = {
-      code: 0,
-      data: name,
-      msg: 'upload success',
-    };
-  } catch (e) {
-    console.error(e);
-  }
-});
+//     let fileObj = request.body;
+//     Object.keys(fileObj).forEach(
+//       (key) => (fileObj[key] = decodeURI(fileObj[key]))
+//     );
+//     // fs.writeFileSync(`${staticPath}/${+new Date()}-${fileObj.name}`, fileObj.text, (e) => {
+//     //   if (e) console.error(e);
+//     //   response.status = 200;
+//     //   response.body = {
+//     //     code: 0,
+//     //     msg: 'upload success'
+//     //   }
+//     // })
+//     try {
+//       let name = `${+new Date()}-${fileObj.name}`;
+//       await writeFile(`${staticPath}/${name}`, fileObj.binary);
+//       response.status = 200;
+//       response.body = {
+//         code: 0,
+//         data: name,
+//         msg: 'upload success'
+//       };
+//     } catch (e) {
+//       console.error(e);
+//     }
+//   }
+// );
 
 // -----------------------formdata 上传--------------------------
 
 const uploadFormData = router.post('/uploadFormData', async (ctx, next) => {
-  const {
-    request,
-    response
-  } = ctx;
+  const { request, response } = ctx;
   const staticPath = path.resolve(__dirname, '../', 'static');
   console.log({
-    request,
+    request
   });
 
   let file = request.files.file;
@@ -157,7 +145,7 @@ const uploadFormData = router.post('/uploadFormData', async (ctx, next) => {
     response.body = {
       code: 0,
       data: name,
-      msg: 'upload success',
+      msg: 'upload success'
     };
   } catch (e) {
     console.error(e);
@@ -166,18 +154,13 @@ const uploadFormData = router.post('/uploadFormData', async (ctx, next) => {
 
 // --------------------------大文件上传-------------------------
 const largeUpload = router.post('/largeUpload', async (ctx, next) => {
-  const {
-    request,
-    response
-  } = ctx;
+  const { request, response } = ctx;
   const staticPath = path.resolve(__dirname, '../', 'static');
   console.log({
-    request,
+    request
   });
   let file = request.files.fileBinary;
-  let {
-    fileName: originFileName
-  } = request.body;
+  let { fileName: originFileName } = request.body;
   try {
     let fileName = originFileName.replace(/(.*)-(\d+)/, '$1');
     let index = originFileName.replace(/(.*)-(\d+)/, '$2');
@@ -192,75 +175,63 @@ const largeUpload = router.post('/largeUpload', async (ctx, next) => {
     response.body = {
       code: 0,
       data: index,
-      msg: 'upload success',
+      msg: 'upload success'
     };
   } catch (e) {
     console.error(e);
   }
 });
 
-
 // --------------------------check file-------------------------
 const checkFile = router.post('/checkFile', async (ctx, next) => {
-  const {
-    request,
-    response
-  } = ctx;
+  const { request, response } = ctx;
   const staticPath = path.resolve(__dirname, '../', 'static');
   let fileName = request.body.fileName;
   let uploadPath = `${staticPath}/${fileName}`;
-  if (fs.existsSync(uploadPath) && !(fs.statSync(uploadPath).isDirectory())) {
+  if (fs.existsSync(uploadPath) && !fs.statSync(uploadPath).isDirectory()) {
     response.status = 200;
     response.body = {
       code: CODE.FILE_EXIT,
       data: fileName,
-      msg: '秒传成功',
+      msg: '秒传成功'
     };
   } else {
-
     response.status = 200;
     response.body = {
       code: CODE.FILE_NOT_EXIT,
       data: fileName,
-      msg: '文件不存在！',
+      msg: '文件不存在！'
     };
   }
 });
 
-
 // --------------------------分片合并-------------------------
 const mergeChunks = router.post('/mergeChunks', async (ctx, next) => {
-  const {
-    request,
-    response
-  } = ctx;
+  const { request, response } = ctx;
   const staticPath = path.resolve(__dirname, '../', 'static');
   console.log({
-    request,
+    request
   });
-  let {
-    fileName,
-    size
-  } = request.body;
+  let { fileName, size } = request.body;
   try {
     let uploadPath = `${staticPath}/${fileName}`;
     let chunkPaths = fs.readdirSync(uploadPath);
-    let newFilePath = `${staticPath}/${+new Date()}-${fileName}`
+    let newFilePath = `${staticPath}/${+new Date()}-${fileName}`;
     let mergeList = chunkPaths.map((chunkpath, index) => {
-      let filePath = path.resolve(uploadPath, chunkpath)
+      let filePath = path.resolve(uploadPath, chunkpath);
       return new Promise((res) => {
         let readableStream = fs.createReadStream(filePath);
         let writeableStream = fs.createWriteStream(newFilePath, {
           start: index * size,
           end: (index + 1) * size
-        })
-        readableStream.on("end", () => {
+        });
+        readableStream.on('end', () => {
           fs.unlinkSync(filePath);
           res();
         });
         readableStream.pipe(writeableStream);
-      })
-    })
+      });
+    });
     try {
       await Promise.all(mergeList);
       fs.rmdirSync(uploadPath);
@@ -269,7 +240,7 @@ const mergeChunks = router.post('/mergeChunks', async (ctx, next) => {
       response.body = {
         code: 0,
         data: '/' + fileName,
-        msg: 'upload success',
+        msg: 'upload success'
       };
     } catch (e) {
       console.error(e);

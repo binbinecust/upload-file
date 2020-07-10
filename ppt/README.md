@@ -36,7 +36,7 @@ multipart: true
 放在本地的临时文件夹里 只需把临时文件移到目标文件夹就行
 
 
-多文件上传 前端 mutiplay 后端 兼容  遍历处理下
+多文件上传 前端 mutiply 后端 兼容  遍历处理下
 {name1: file1} -> {name1: [file1, file2, file3]}
 
 `target 属性 `
@@ -93,6 +93,8 @@ http://www.ruanyifeng.com/blog/2008/06/base64.html
 
 base64 缺点 payload 变大了 变大1/3
 
+Base64编码会把3字节的二进制数据编码为4字节的文本数据，长度增加33%，好处是编码后的文本数据可以在邮件正文、网页等直接显示。
+
 413 payload太大 找两个不同的文件进行编码上传
 
 2、二进制文件 读取文件内容
@@ -107,13 +109,6 @@ vue.config.js  devserver proxy配置 target属性
 
 request config  'Content-Type': '"multipart/form-data"'
 
-
-<input type="file" multiple id="uploader" accept="image/*" />
-
-```javascript
-let uploaderDom  = document.querySelector('uploader')
-uploaderDom.
-```
 
 ## 大文件上传
 progress item Progress totalProgress 闭包

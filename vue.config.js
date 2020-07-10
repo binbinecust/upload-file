@@ -1,15 +1,7 @@
 module.exports = {
-  configureWebpack: (config) => {
-    config.module.rules.push({
-      test: /\.worker\.js$/,
-      use: {
-        loader: 'worker-loader',
-        options: { inline: true },
-      },
-    });
-  },
   devServer: {
     https: false,
+    port: 8082
     // proxy: {
     //   '/api/*': {
     //     target: 'http://localhost:8000',
@@ -22,5 +14,5 @@ module.exports = {
     //   }
     // }
   },
-  pluginOptions: {},
+  pluginOptions: {}
 };

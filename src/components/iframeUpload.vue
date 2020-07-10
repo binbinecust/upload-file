@@ -1,32 +1,18 @@
 <template>
   <div>
-    <iframe
-      id="temp-iframe"
-      name="temp-iframe"
-      src=""
-      style="display:none;"
-    ></iframe>
+    <iframe id="temp-iframe" name="temp-iframe" src="" style="display:none;"></iframe>
     <form
       method="post"
       target="temp-iframe"
-      action="http://localhost:8080/api/uploadForm"
+      action="http://localhost:8082/api/uploadForm"
       enctype="multipart/form-data"
     >
-
       选择文件(可多选):
-      <input
-        type="file"
-        name="f1"
-        id="f1"
-        multiple
-      /><br /> <br />
-      <br />
-
-      <button
-        type="submit"
-        id="btn-0"
-      >上 传</button>
-
+      <input type="file" name="f1" id="f1" multiple>
+      <br>
+      <br>
+      <br>
+      <button type="submit" id="btn-0">上 传</button>
     </form>
   </div>
 </template>

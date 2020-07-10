@@ -16,9 +16,9 @@
       <el-tab-pane label="大文件上传">
         <big-upload></big-upload>
       </el-tab-pane>
-      <el-tab-pane label="断点续传">
+      <!-- <el-tab-pane label="断点续传">
         <break-upload></break-upload>
-      </el-tab-pane>
+      </el-tab-pane>-->
     </el-tabs>
   </div>
 </template>
@@ -28,7 +28,7 @@ import formUpload from './components/formUpload.vue';
 import iframeUpload from './components/iframeUpload.vue';
 import encodeUpload from './components/encodeUpload.vue';
 import formData from './components/formData.vue';
-import breakUpload from './components/breakUpload.vue';
+// import breakUpload from './components/breakUpload.vue';
 import bigUpload from './components/bigUpload.vue';
 
 export default {
@@ -37,7 +37,7 @@ export default {
     formUpload,
     encodeUpload,
     formData,
-    breakUpload,
+    // breakUpload,
     iframeUpload,
     bigUpload
   }
